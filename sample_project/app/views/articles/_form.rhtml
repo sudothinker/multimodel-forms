@@ -1,0 +1,15 @@
+<label>Title</label>
+<%= f.text_field :title %>
+
+<label>User id</label>
+<%= f.text_field :user_id %>
+
+<h3>Links</h3>
+<div id="links">
+  <%= render :partial => 'links/link', :collection => @article.links %>
+</div>
+
+<%= sortable_element 'links', :tag => 'p' %>
+
+
+<%= add_link "Add link", :link, nil, {:id => 'links', :tag => 'p'} %>

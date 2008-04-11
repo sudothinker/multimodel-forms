@@ -1,0 +1,9 @@
+<p class="link">
+  &nbsp;
+<% fields_for_associated :article, link do |l_form| %>
+  <%= l_form.text_field :url, :index => nil %>
+  <label>Published on</label> <%= l_form.date_select :published_on, :index => '' %>
+  <%# Note that for date_select you have to use :index => '' rather than :index => nil %>
+  <%= delete_link_for(link, "Delete", l_form) %>
+<% end %>
+</p>
