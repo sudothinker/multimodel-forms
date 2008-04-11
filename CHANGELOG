@@ -1,0 +1,7 @@
+* Added datetime field to links to show that you have to use :index => '' instead of :index => nil for date_select helper tag 
+
+* Added validation to links and overrode field_error_proc to show associated validations working from within article model 
+
+* Applied patch to allow for CamelCase? model names 
+
+* Added support for acts_as_list in through associations. See the sample project for usage. If the through relation has a position column then these will automatically be updated when the form is submitted. The view can also be sorted with drag and drop (implemented in the sample project

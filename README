@@ -1,8 +1,50 @@
-MultimodelForms
-===============
+= Multimodel-Forms
 
-This is largely derived from: http://railscasts.com/episodes/75
+This plugin allows multiple models to have a place in one form. For example, if an article model has_many links. The links can be edited, created, deleted and even sorted (acts_as_list) from the article edit/new form. Included ajax helpers so links can be added and deleted client side and db is only touched when form is submitted.
+
+This is largely derived from Ryan Bates' tutorial over at: http://railscasts.com/episodes/75
+
+Acquire via git at: git clone git@github.com:sudothinker/multimodel-forms.git
+  
+Sample project available in multimodel-forms/sample_project - This can be removed if not needed.
+
+== Example
+
+  article.rb
+
+  class Article < ActiveRecord::Base
+    has_many_with_attributes :links
+  end
+
+  --
+  link.rb
+
+  class Link < ActiveRecord::Base
+    belongs_to :article
+  end
+
+  Can now add a view partial to render the article form and edit the associated links.
+
+  articles/_form.rhtml
+
+  <label>Title</label>
+  <%= f.text_field :title %>
+
+  <h3>Links</h3>
+  <div id="links">
+    <%= render :partial => 'links/link', :collection => @article.links %>
+  </div>
+
+  <%= add_link "Add link", :link %>
+
+  links/_link.rhtml
+
+  <p class="link">
+  <% fields_for_associated :article, link do |l_form| %>
+    <%= l_form.text_field :url, :index => nil %>
+    <%= delete_link_for(link, "Delete", l_form) %>
+  <% end %>
+  </p>
+
 
 Written by Michael Murray <mdmurray@gmail.com>
-
-Help docs coming.. in the mean time see the sample application for usage.
