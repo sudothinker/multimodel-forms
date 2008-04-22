@@ -40,4 +40,66 @@ class << ActiveRecord::Base
     through.class_eval "def should_destroy?; should_destroy.to_i == 1; end"
     through.class_eval "attr_accessor :should_destroy"
   end
+  
+  def belongs_to_with_attributes(association_name, attr_options = {}, options = {}, &extension)
+    to_one_with_attributes("belongs_to", association_name, attr_options, options, &extension)
+  end
+  def has_one_with_attributes(association_name, attr_options = {}, options = {}, &extension)
+    to_one_with_attributes("has_one", association_name, attr_options, options, &extension)
+  end
+  
+  def to_one_with_attributes(to_name, association_name, attr_options = {}, options = {}, &extension)
+    # This is called when a form is submited.
+    define_method "#{association_name}_attributes=" do |in_params|
+      in_params.delete(:id)
+      if self.send("#{association_name}").nil?
+        single = self.send("build_#{association_name}")
+      else
+        single = self.send("#{association_name}")
+      end
+      single.attributes = in_params
+      puts attr_options.inspect
+      unless attr_options[:push].blank?
+        inc = attr_options[:push]
+        inc = [inc] unless inc.instance_of?(Array)
+        puts inc
+        inc.each do |i|
+          single.send("#{i}=", self.send(i))
+        end
+      end
+    end
+  
+    through = association_name.to_s.singularize.camelize.constantize
+  
+    define_method "#{association_name}_attributes" do
+      #self.send("build_#{association_name}") #RADAR don't do this results in current has-one association having it's fk set to null !!!
+      through.new
+    end
+  
+    # class methods
+    class_eval "after_update :save_#{association_name}"    
+    if options.empty?
+      class_eval "#{to_name}(:#{association_name})"
+    else
+      class_eval "#{to_name}(:#{association_name}, #{options.inspect})"
+    end
+  
+    # this will destroy/save the through relation models after self is updated
+    define_method "save_#{association_name}" do
+      x = self.send(association_name)
+      return if x.nil? or x.frozen?
+      if x.should_destroy?
+        x.destroy
+        self.send("#{association_name}=", nil)
+      else
+        x.save(false)
+      end
+    end
+  
+    # Through methods
+    through.class_eval "def should_destroy?; should_destroy.to_i == 1; end"
+    # always have a value to avoid holes in array params in forms
+    through.class_eval "def should_destroy; @should_destroy ||= 0; end" 
+    through.class_eval "attr_writer :should_destroy"
+  end
 end
