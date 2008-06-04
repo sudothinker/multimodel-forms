@@ -22,7 +22,7 @@ module MultimodelForms
     end
     
     def new_delete_link text, through, klass
-      link_to_function("Delete", "$(this).up('.#{klass}').remove()", :class => 'delete')
+      link_to_function(text, "$(this).up('.#{klass}').remove()", :class => 'delete')
     end
     
     # Defaults klass to through class name
