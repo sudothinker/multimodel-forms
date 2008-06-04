@@ -36,7 +36,7 @@ class << ActiveRecord::Base
     end
 
     # Through methods
-    through = association_id.to_s.singularize.capitalize.constantize
+    through = association_id.to_s.classify.constantize
     through.class_eval "def should_destroy?; should_destroy.to_i == 1; end"
     through.class_eval "attr_accessor :should_destroy"
   end
