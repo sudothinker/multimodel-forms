@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Multimodel-forms : Multi-model forms plugin for rails" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Multimodel-forms</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/sudothinker/multimodel-forms">Fork Me on GitHub</a>
+
+          <h1 id="project_title">Multimodel-forms</h1>
+          <h2 id="project_tagline">Multi-model forms plugin for rails</h2>
+
+          <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/sudothinker/multimodel-forms/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/sudothinker/multimodel-forms/tarball/master">Download this project as a tar.gz file</a>
+          </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>Multimodel-Forms</h3>
+
+<p>This plugin allows multiple models to have a place in one form. For example, if an article model has_many links. The links can be edited, created, deleted and even sorted (acts_as_list) from the article edit/new form. Included ajax helpers so links can be added and deleted client side and db is only touched when form is submitted.</p>
+
+<p>This is largely derived from Ryan Bates' tutorial over at: <a href="http://railscasts.com/episodes/75">http://railscasts.com/episodes/75</a></p>
+
+<p>Acquire via git at: git clone git@github.com:sudothinker/multimodel-forms.git</p>
+
+<p>Sample project available in multimodel-forms/sample_project - This can be removed if not needed.</p>
+
+<h4>Example</h4>
+
+<p>article.rb
+<code>ruby
+class Article &lt; ActiveRecord::Base
+  has_many_with_attributes :links
+end
+</code></p>
+
+<p>link.rb
+<code>ruby
+  class Link &lt; ActiveRecord::Base
+    belongs_to :article
+  end
+</code></p>
+
+<p>Can now add a view partial to render the article form and edit the associated links.</p>
+
+<p>articles/_form.rhtml</p>
+
+<p>Title
+  &lt;%= f.text_field :title %&gt;</p>
+
+<p></p><h3>Links</h3>
+   
+    &lt;%= render :partial =&gt; 'links/link', :collection =&gt; @article.links %&gt;
+   
+
+<p>&lt;%= add_link "Add link", :link %&gt;</p>
+
+<p>links/_link.rhtml</p>
+
+<p></p><p>
+  &lt;% fields_for_associated :article, link do |l_form| %&gt;
+    &lt;%= l_form.text_field :url, :index =&gt; nil %&gt;
+    &lt;%= delete_link_for(link, "Delete", l_form) %&gt;
+  &lt;% end %&gt;
+  </p>
+
+<p>Written by Michael Murray <a href="mailto:mdmurray@gmail.com">mdmurray@gmail.com</a></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Multimodel-forms maintained by <a href="https://github.com/sudothinker">sudothinker</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
